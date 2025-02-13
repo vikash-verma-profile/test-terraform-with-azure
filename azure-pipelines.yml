@@ -1,20 +1,18 @@
 # Starter pipeline
 # Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
 trigger:
-- main
+  - main
 
 pool:
   name: Self-Hosted
 
 steps:
 
-# check terraform is Installed 
-  - task: Powershell@2
-    displayname:"Terraform is Installed"
-    condition:eq(variables['Agent OS'],'Winodows_NT')
+  # Check if Terraform is Installed
+  - task: PowerShell@2
+    displayName: "Check and Install Terraform"
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
     inputs:
       targetType: 'inline'
       script: |
@@ -22,12 +20,13 @@ steps:
         if ($terraform -eq $null) {
           Write-Host "Terraform not found. Installing..."
           Invoke-WebRequest -Uri "https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_windows_amd64.zip" -OutFile "terraform.zip"
-          Expand-Archive terraform.zip -DestinationPath "C:\terraform"
-          [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\terraform", [System.EnvironmentVariableTarget]::Machine)
+          Expand-Archive -Path "terraform.zip" -DestinationPath "C:\terraform"
+          $env:Path += ";C:\terraform"
           Write-Host "Terraform installed successfully."
         } else {
           Write-Host "Terraform is already installed."
         }
-  - script: |
-      dir /s /b
+
+  # List all files in the working directory
+  - script: dir /s /b
     displayName: "List Files in Directory"
