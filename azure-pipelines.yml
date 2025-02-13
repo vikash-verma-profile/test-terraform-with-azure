@@ -16,8 +16,8 @@ steps:
     displayname:"Terraform is Installed"
     condition:eq(variables['Agent OS'],'Winodows_NT')
     inputs:
-     targetType: 'inline'
-     script: |
+      targetType: 'inline'
+      script: |
         $terraform = Get-Command terraform -ErrorAction SilentlyContinue
         if ($terraform -eq $null) {
           Write-Host "Terraform not found. Installing..."
@@ -29,5 +29,5 @@ steps:
           Write-Host "Terraform is already installed."
         }
   - script: |
-     dir /s /b
+      dir /s /b
     displayName: "List Files in Directory"
