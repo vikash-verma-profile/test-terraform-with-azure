@@ -30,3 +30,12 @@ steps:
   # List all files in the working directory
   - script: dir /s /b
     displayName: "List Files in Directory"
+
+  # Azure CLI
+  - task: PowerShell@2
+    displayName: "Azure CLI login"
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    inputs:
+      targetType: 'inline'
+      script: |
+        az login --service-principal -u $(ARM_CLIENT_ID) -p $(ARM_CLIENT_SECRET) --tenant $(ARM_TENANT_ID)
