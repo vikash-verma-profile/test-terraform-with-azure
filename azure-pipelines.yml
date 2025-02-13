@@ -8,13 +8,12 @@ pool:
   name: Self-Hosted
 
 steps:
-
   # Check if Terraform is Installed
   - task: PowerShell@2
     displayName: "Check and Install Terraform"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         $terraform = Get-Command terraform -ErrorAction SilentlyContinue
         if ($terraform -eq $null) {
@@ -36,15 +35,15 @@ steps:
     displayName: "Azure CLI login"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         az login --service-principal -u $(ARM_CLIENT_ID) -p $(ARM_CLIENT_SECRET) --tenant $(ARM_TENANT_ID)
-  
+
   # Initialize Terraform
   - task: PowerShell@2
     displayName: "Intialize Terraform"
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         cd terraform
         terraform init
@@ -53,7 +52,23 @@ steps:
   - task: PowerShell@2
     displayName: "Validate Terraform"
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         cd terraform
         terraform validate
+    # Plan Terraform
+  - task: PowerShell@2
+    displayName: "Plan Terraform"
+    inputs:
+      targetType: "inline"
+      script: |
+        cd terraform
+        terraform plan
+    # Apply Terraform
+  - task: PowerShell@2
+    displayName: "Apply Terraform"
+    inputs:
+      targetType: "inline"
+      script: |
+        cd terraform
+        terraform apply
