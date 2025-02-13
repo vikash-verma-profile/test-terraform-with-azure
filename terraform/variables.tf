@@ -1,6 +1,6 @@
 variable "resource_group_name" {
   type = string
-  default = "my-demo-rg1"
+  default = "my-demo-rg2"
 }
 variable "location" {
   type = string
