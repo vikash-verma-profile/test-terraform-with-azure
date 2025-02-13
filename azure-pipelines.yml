@@ -10,10 +10,24 @@ pool:
   name: Self-Hosted
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+# check terraform is Installed 
+  - task: Powershell@2
+    displayname:"Terraform is Installed"
+    condition:eq(variables['Agent OS'],'Winodows_NT')
+    inputs:
+     targetType: 'inline'
+     script: |
+        $terraform = Get-Command terraform -ErrorAction SilentlyContinue
+        if ($terraform -eq $null) {
+          Write-Host "Terraform not found. Installing..."
+          Invoke-WebRequest -Uri "https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_windows_amd64.zip" -OutFile "terraform.zip"
+          Expand-Archive terraform.zip -DestinationPath "C:\terraform"
+          [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\terraform", [System.EnvironmentVariableTarget]::Machine)
+          Write-Host "Terraform installed successfully."
+        } else {
+          Write-Host "Terraform is already installed."
+        }
+  - script: |
+     dir /s /b
+    displayName: "List Files in Directory"
