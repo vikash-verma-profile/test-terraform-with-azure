@@ -63,7 +63,11 @@ steps:
       targetType: "inline"
       script: |
         cd terraform
-        terraform plan
+        terraform plan -out=tfplan `
+          -var "ARM_CLIENT_ID=$(ARM_CLIENT_ID)" `
+          -var "ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)" `
+          -var "ARM_TENANT_ID=$(ARM_TENANT_ID)" `
+          -var "ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)" `
     # Apply Terraform
   - task: PowerShell@2
     displayName: "Apply Terraform"
@@ -71,4 +75,8 @@ steps:
       targetType: "inline"
       script: |
         cd terraform
-        terraform apply
+        terraform apply -out=tfplan `
+          -var "ARM_CLIENT_ID=$(ARM_CLIENT_ID)" `
+          -var "ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)" `
+          -var "ARM_TENANT_ID=$(ARM_TENANT_ID)" `
+          -var "ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)" `
